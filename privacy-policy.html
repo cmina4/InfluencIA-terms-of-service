@@ -1,0 +1,131 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - InfluencIA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Política de Privacidad de InfluencIA</h1>
+        <p><strong>Última actualización:</strong> 20 de mayo de 2025</p>
+        
+        <h2>1. Introducción</h2>
+        <p>InfluencIA es un proyecto académico desarrollado como parte de un Trabajo Fin de Máster (TFM) del Máster Universitario en Inteligencia Artificial for Business, bajo la supervisión de la Prof. Dña. Laura Cristina Ahogado Anido. Este proyecto utiliza inteligencia artificial para optimizar la selección de influencers en campañas de marketing, recopilando datos a través de la API de TikTok. Nos comprometemos a proteger tu privacidad y cumplir con el Reglamento General de Protección de Datos (RGPD).</p>
+        
+        <h2>2. Datos que Recolectamos</h2>
+        <p>Recolectamos los siguientes datos a través de la API de TikTok:</p>
+        <ul>
+            <li>Datos de influencers: identificadores de usuario, nombre de usuario, número de seguidores, tasas de engagement, visualizaciones promedio y temas de contenido.</li>
+            <li>Datos de audiencia: información demográfica (edad, género, ubicación) de los seguidores de los influencers.</li>
+            <li>Datos técnicos: registros de uso y logs de interacción con nuestra plataforma.</li>
+        </ul>
+        
+        <h2>3. Base Legal para el Procesamiento</h2>
+        <p>Procesamos datos bajo las siguientes bases legales:</p>
+        <ul>
+            <li><strong>Interés legítimo:</strong> Para investigación académica y desarrollo del TFM.</li>
+            <li><strong>Consentimiento:</strong> Cuando sea necesario, obtendremos tu consentimiento explícito para procesar datos personales.</li>
+        </ul>
+        
+        <h2>4. Uso de los Datos</h2>
+        <p>Los datos recolectados se utilizan para:</p>
+        <ul>
+            <li>Analizar métricas de influencers y audiencias.</li>
+            <li>Entrenar modelos de inteligencia artificial para predecir el retorno de inversión (ROI) en campañas de marketing.</li>
+            <li>Presentar resultados en el marco del TFM.</li>
+        </ul>
+        
+        <h2>5. Almacenamiento y Seguridad</h2>
+        <p>Tomamos medidas para proteger tus datos:</p>
+        <ul>
+            <li>Almacenamos los datos en servidores seguros dentro de la Unión Europea.</li>
+            <li>Usamos cifrado (HTTPS/TLS) para la transmisión de datos.</li>
+            <li>Limitamos el acceso a los datos únicamente al equipo del proyecto (5 estudiantes y la tutora).</li>
+        </ul>
+        <p>Conservaremos los datos solo durante el tiempo necesario para cumplir con los objetivos del TFM (hasta diciembre de 2025, salvo que se indique lo contrario).</p>
+        
+        <h2>6. Tus Derechos (ARSOPL)</h2>
+        <p>Conforme al RGPD, tienes derecho a:</p>
+        <ul>
+            <li>Acceder a tus datos personales.</li>
+            <li>Rectificar datos inexactos.</li>
+            <li>Solicitar la supresión de tus datos.</li>
+            <li>Oponerte al procesamiento.</li>
+            <li>Portar tus datos a otro proveedor.</li>
+            <li>Limitar el procesamiento de tus datos.</li>
+        </ul>
+        <p>Para ejercer estos derechos, contáctanos en <a href="mailto:tfm-influencia@grupo.com">tfm-influencia@grupo.com</a>.</p>
+        
+        <h2>7. Compartición de Datos</h2>
+        <p>No compartiremos tus datos con terceros, salvo:</p>
+        <ul>
+            <li>Con el consentimiento explícito del interesado.</li>
+            <li>Cuando sea requerido por ley o para cumplir con una obligación legal.</li>
+        </ul>
+        
+        <h2>8. Notificación de Brechas de Seguridad</h2>
+        <p>En caso de una brecha de seguridad que afecte a tus datos, notificaremos a las autoridades competentes (como la Agencia Española de Protección de Datos) dentro de las 72 horas, conforme al artículo 33 del RGPD, y te informaremos sin demora indebida si hay un alto riesgo para tus derechos y libertades.</p>
+        
+        <h2>9. Cambios en la Política</h2>
+        <p>Podemos actualizar esta Política de Privacidad. Publicaremos los cambios en esta página y, si son significativos, te notificaremos por correo electrónico.</p>
+        
+        <h2>10. Contacto</h2>
+        <p>Para cualquier pregunta o solicitud relacionada con tu privacidad, contáctanos en: <a href="mailto:sgonzaleza1@student.eae.es">tfm-influencia@grupo.com</a>.</p>
+    </div>
+</body>
+</html>
