@@ -1,0 +1,99 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos de Servicio - InfluencIA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Términos de Servicio de InfluencIA</h1>
+        <p><strong>Última actualización:</strong> 20 de mayo de 2025</p>
+        
+        <h2>1. Introducción</h2>
+        <p>Bienvenido a InfluencIA, una plataforma desarrollada como parte de un Trabajo Fin de Máster (TFM) del Máster Universitario en Inteligencia Artificial for Business. Este proyecto, realizado por un equipo de 5 estudiantes bajo la supervisión de la Prof. Dña. Laura Cristina Ahogado Anido, tiene como objetivo utilizar inteligencia artificial para optimizar la selección de influencers en campañas de marketing. Estos Términos de Servicio rigen el uso de nuestra plataforma y los datos obtenidos a través de la API de TikTok.</p>
+        
+        <h2>2. Aceptación de los Términos</h2>
+        <p>Al utilizar InfluencIA, aceptas cumplir con estos Términos de Servicio y todas las leyes aplicables, incluyendo el Reglamento General de Protección de Datos (RGPD) de la Unión Europea. Si no estás de acuerdo con estos términos, no utilices nuestra plataforma.</p>
+        
+        <h2>3. Uso de la Plataforma</h2>
+        <p>InfluencIA utiliza datos obtenidos de la API de TikTok para analizar métricas de influencers (como seguidores, tasas de engagement y demografía de audiencia). Nos comprometemos a:</p>
+        <ul>
+            <li>Utilizar los datos únicamente para fines académicos y de investigación en el marco del TFM.</li>
+            <li>Cumplir con las políticas de uso de la API de TikTok y otras normativas aplicables.</li>
+            <li>No compartir datos con terceros sin consentimiento explícito, salvo lo requerido por ley.</li>
+        </ul>
+        
+        <h2>4. Responsabilidades del Usuario</h2>
+        <p>Como usuario de InfluencIA, te comprometes a:</p>
+        <ul>
+            <li>No utilizar los datos obtenidos para fines comerciales sin autorización.</li>
+            <li>Respetar los derechos de privacidad de los influencers y otros usuarios.</li>
+            <li>Notificar cualquier uso indebido o violación de seguridad al equipo de InfluencIA.</li>
+        </ul>
+        
+        <h2>5. Limitación de Responsabilidad</h2>
+        <p>InfluencIA es un proyecto académico y se proporciona "tal cual". No garantizamos la precisión de los datos obtenidos ni la idoneidad de los resultados para fines comerciales. No nos hacemos responsables por cualquier daño derivado del uso de la plataforma.</p>
+        
+        <h2>6. Cambios en los Términos</h2>
+        <p>Podemos actualizar estos Términos de Servicio en cualquier momento. Notificaremos los cambios mediante la publicación de la versión actualizada en esta página.</p>
+        
+        <h2>7. Contacto</h2>
+        <p>Para cualquier pregunta o duda sobre estos Términos de Servicio, contáctanos en: <a href="mailto:sgonzaleza1@student.eae.es">tfm-influencia@grupo.com</a>.</p>
+    </div>
+</body>
+</html>
